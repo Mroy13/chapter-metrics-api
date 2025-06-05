@@ -13,7 +13,6 @@ async function insertChapters(req, res) {
         SuccessResponse.data=req.validChapters.length;
         return res.status(StatusCodes.CREATED).json(SuccessResponse);
     } catch (error) {
-        console.log("c:",error);
         ErrorResponse=CreateErrorResponse();
         ErrorResponse.message = error.explanation || "Internal server error";
         return res.status(error.statusCode || 500).json(ErrorResponse);
@@ -21,6 +20,51 @@ async function insertChapters(req, res) {
 }
 
 
+async function getChapters(req,res) {
+    try {
+        const chapterData = await chapterService.getChapters();
+        SuccessResponse=CreateSuccessResponse();
+        SuccessResponse.data = chapterData;
+        return res.
+                  status(StatusCodes.CREATED)
+                  .json(SuccessResponse);
+    } catch (error) {
+        ErrorResponse=CreateErrorResponse();
+        ErrorResponse.message = error.explanation;
+        return res.status(error.statusCode).json({
+                ErrorResponse
+            });
+    }
+}
+
+
+
+
+
+async function getChapter(req,res) {
+    try {
+
+        const chapterData = await chapterService.getChapter(req.params.id);
+        SuccessResponse=CreateSuccessResponse();
+        SuccessResponse.data = chapterData;
+        return res.
+                  status(StatusCodes.CREATED)
+                  .json(SuccessResponse);
+    } catch (error) {
+        ErrorResponse=CreateErrorResponse();
+        ErrorResponse.message = error.explanation;
+        return res.status(error.statusCode).json({
+                ErrorResponse
+            });
+    }
+}
+
+
+
+
+
 module.exports = {
-    insertChapters,
+     insertChapters,
+     getChapter,
+     getChapters
 }
