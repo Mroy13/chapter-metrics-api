@@ -22,7 +22,15 @@ async function insertChapters(req, res) {
 
 async function getChapters(req,res) {
     try {
-        const chapterData = await chapterService.getChapters();
+        const filters={
+           class:req.query.class,
+           unit:req.query.unit,
+           subject:req.query.subject,
+           status:req.query.status,
+           weakChapter:req.query.weakChapter
+        };
+        
+        const chapterData = await chapterService.getChapters(filters,req.query.page,req.query.limit);
         SuccessResponse=CreateSuccessResponse();
         SuccessResponse.data = chapterData;
         return res.

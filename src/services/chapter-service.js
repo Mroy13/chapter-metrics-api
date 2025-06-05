@@ -32,9 +32,9 @@ async function insertChapters(data) {
 
 
 
-async function getChapters(){
+async function getChapters(filters,page,limit){
     try {
-        const res=await ChapterRepo.getAll();
+        const res=await ChapterRepo.getFilteredChapters(filters,page,limit);
         return res;
     } catch (error) {
         throw new Apperror("server side probelem",StatusCode.INTERNAL_SERVER_ERROR);
