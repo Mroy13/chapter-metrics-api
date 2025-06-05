@@ -1,5 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
-const { SuccessResponse, ErrorResponse } = require('../utils/common');
+const { CreateSuccessResponse, CreateErrorResponse } = require('../utils/common');
 const fs = require('fs');
 const path = require('path');
 const upload = require('../config/multer-config');
@@ -61,15 +61,18 @@ async function validateChapters(chapters) {
 
 //Middleware function to parse the file and validate the schema.
 async function uploadFile(req, res, next) {
-
+    ErrorResponse=CreateErrorResponse();
     upload.single('file')(req, res, async (err) => {
         if (err) {
             ErrorResponse.message = "Unable to upload File"
-            res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
+            return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
         }
 
 
-        if (req.file == undefined) return next();
+        if (req.file == undefined) {
+            ErrorResponse.message="file not present";
+            return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
+        }
 
         try {
             const filePath = req.file.path;
@@ -87,12 +90,15 @@ async function uploadFile(req, res, next) {
             req.validChapters = validChapters;
             req.failedChapters = failedChapters;
 
+
+
             // If all chapters failed validation, return error
             if (validChapters.length === 0 && failedChapters.length > 0) {
+                
                 ErrorResponse.message = "All chapters failed validation";
                 ErrorResponse.error = { failedChapters };
-                res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
-                return;
+                return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
+                
             }
             
             
