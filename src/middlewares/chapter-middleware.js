@@ -1,4 +1,8 @@
 const { StatusCodes } = require('http-status-codes');
+const rateLimit = require('express-rate-limit');
+const {RedisStore} = require('rate-limit-redis');
+const redisClient = require('../config/redis-config');
+
 const { CreateSuccessResponse, CreateErrorResponse } = require('../utils/common');
 const fs = require('fs');
 const path = require('path');
@@ -118,7 +122,27 @@ async function uploadFile(req, res, next) {
 
 
 
+
+
+
+const rateLimiter = rateLimit({
+    store: new RedisStore({
+        sendCommand: (...args) => redisClient.sendCommand(args),
+    }),
+    windowMs: 60 * 1000, // 1 minute
+    max: 30, // Limit each IP to 30 requests per windowMs
+    message: {
+        success: false,
+        message: 'Too many requests, please try again later.',
+        error: 'Rate limit exceeded'
+    },
+    standardHeaders: true, 
+    legacyHeaders: false,
+});
+
+
+
 module.exports = {
     uploadFile,
-
+    rateLimiter
 }
