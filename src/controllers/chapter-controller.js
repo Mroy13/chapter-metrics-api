@@ -45,7 +45,7 @@ async function getChapters(req, res) {
         SuccessResponse = CreateSuccessResponse();
         SuccessResponse.data = chapterData;
         return res.
-            status(StatusCodes.CREATED)
+             status(StatusCodes.OK)
             .json(SuccessResponse);
     } catch (error) {
         ErrorResponse = CreateErrorResponse();
@@ -67,7 +67,7 @@ async function getChapter(req, res) {
         SuccessResponse = CreateSuccessResponse();
         SuccessResponse.data = chapterData;
         return res.
-            status(StatusCodes.CREATED)
+            status(StatusCodes.OK)
             .json(SuccessResponse);
     } catch (error) {
         ErrorResponse = CreateErrorResponse();
